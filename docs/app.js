@@ -6,7 +6,7 @@ const SILENCE_SRC = 'assets/silence1.mp3';
 const LS_SETTINGS = 'ac.settings.v1';
 const LS_SELECTED = 'ac.selected.v1';
 const AUDIO_CACHE = 'ac-audio-v1';
-const SPEEDS = [0.75, 1, 1.25, 1.5, 1.75, 2];
+const SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
 const DEFAULTS = {
   mode: 'qa',

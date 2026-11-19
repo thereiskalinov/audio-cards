@@ -1,5 +1,5 @@
 'use strict';
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL_CACHE = 'ac-shell-' + VERSION;
 const AUDIO_CACHE = 'ac-audio-v1';
 const SHELL_FILES = [
