@@ -1,0 +1,7 @@
+tools/_e2e/node_modules/
+tools/_e2e/
+tools/_shots/
+tools/_chrome_profile*/
+tools/_probe/
+_tts_test/
+*.log

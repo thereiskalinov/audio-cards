@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Аудиокарточки</title>
+<meta name="theme-color" content="#0b1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Карточки">
+<meta name="format-detection" content="telephone=no">
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-titles">
+      <h1>Аудиокарточки</h1>
+      <p id="content-title">загрузка…</p>
+    </div>
+    <button id="btn-settings" class="icon-btn" aria-label="Настройки">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4 8h9M17 8h3M4 16h3M11 16h9"/>
+        <circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="toolbar">
+    <button id="btn-select-all" class="chip">Выбрать все</button>
+    <button id="btn-clear" class="chip">Снять</button>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
+      <input id="search" type="search" placeholder="Поиск" autocomplete="off" enterkeyhint="search">
+    </div>
+  </div>
+
+  <div id="install-hint" class="install-hint hidden">
+    <div class="ih-title">Добавьте на экран «Домой»</div>
+    <div class="ih-text">В Safari нажмите <b>Поделиться</b> → <b>На экран «Домой»</b>. Так приложение будет открываться без браузера и работать в фоне.</div>
+    <button id="ih-close" class="ih-close" aria-label="Скрыть">×</button>
+  </div>
+
+  <main id="list" class="list"></main>
+
+  <div id="launchbar" class="launchbar">
+    <div class="launch-meta">
+      <div id="sel-count" class="sel-count">0 вопросов</div>
+      <div id="prep-status" class="prep-status"></div>
+    </div>
+    <button id="btn-start" class="btn-start" disabled>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <span>Запустить</span>
+    </button>
+  </div>
+</div>
+
+<div id="player" class="player hidden">
+  <div class="p-top">
+    <button id="p-close" class="icon-btn" aria-label="Свернуть">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 10l6 6 6-6"/></svg>
+    </button>
+    <div class="p-meta">
+      <span id="p-count">0 / 0</span>
+      <span id="p-part" class="p-part"></span>
+    </div>
+    <button id="p-settings" class="icon-btn" aria-label="Настройки">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/></svg>
+    </button>
+  </div>
+
+  <div class="p-body">
+    <div id="p-num" class="p-num">—</div>
+    <div id="p-title" class="p-title"></div>
+    <div id="p-q" class="p-text p-q"></div>
+    <div id="p-a" class="p-text p-a hidden"></div>
+  </div>
+
+  <div class="p-progress">
+    <input id="p-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Перемотка">
+    <div class="p-times"><span id="p-cur">0:00</span><span id="p-dur">0:00</span></div>
+  </div>
+
+  <div class="p-speed" id="p-speed"></div>
+
+  <div class="p-controls">
+    <button id="p-prev" class="ctl" aria-label="Предыдущая">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6L18 6v12z"/></svg>
+    </button>
+    <button id="p-back10" class="ctl ctl-sm">−10</button>
+    <button id="p-play" class="p-play" aria-label="Играть">
+      <svg id="p-play-icon" viewBox="0 0 24 24" width="34" height="34" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <button id="p-fwd10" class="ctl ctl-sm">+10</button>
+    <button id="p-next" class="ctl" aria-label="Следующая">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div id="settings" class="sheet hidden">
+  <div class="sheet-panel">
+    <div class="sheet-head">
+      <h2>Настройки</h2>
+      <button id="s-close" class="btn-done">Готово</button>
+    </div>
+    <div class="sheet-body">
+      <div class="set-row">
+        <div class="set-label">Режим чтения</div>
+        <div class="seg" id="s-mode">
+          <button data-mode="qa">Вопрос → ответ</button>
+          <button data-mode="solid">Подряд</button>
+        </div>
+        <div class="set-hint">«Вопрос → ответ»: пауза, чтобы вы ответили сами, затем ответ.</div>
+      </div>
+
+      <div class="set-row">
+        <div class="set-label">Пауза на подумать <b id="s-pause-val">5 с</b></div>
+        <input id="s-pause" type="range" min="0" max="20" step="1" value="5">
+      </div>
+
+      <div class="set-row">
+        <div class="set-label">Пауза между карточками <b id="s-gap-val">1 с</b></div>
+        <input id="s-gap" type="range" min="0" max="10" step="1" value="1">
+      </div>
+
+      <div class="set-row">
+        <div class="set-label">Повтор каждой карточки <b id="s-repeat-val">1</b></div>
+        <input id="s-repeat" type="range" min="1" max="3" step="1" value="1">
+      </div>
+
+      <div class="set-row set-row-inline">
+        <div class="set-label">Перемешать порядок</div>
+        <label class="switch"><input id="s-shuffle" type="checkbox"><span></span></label>
+      </div>
+
+      <div class="set-row">
+        <div class="set-label">Скорость <b id="s-speed-val">1.25×</b></div>
+        <input id="s-speed" type="range" min="0.6" max="2" step="0.05" value="1.25">
+      </div>
+
+      <div class="set-row">
+        <div class="set-label">Офлайн-копия <b id="s-offline">—</b></div>
+        <button id="s-cache" class="chip chip-wide">Обновить офлайн-копию</button>
+        <div class="set-hint">Звук хранится в памяти телефона. В зале можно слушать без интернета.</div>
+      </div>
+
+      <div class="set-row">
+        <div class="set-label">Голос</div>
+        <div class="set-hint" id="s-voice">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<audio id="audio" preload="auto" playsinline></audio>
+
+<script src="./app.js"></script>
+</body>
+</html>
